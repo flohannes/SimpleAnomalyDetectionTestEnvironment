@@ -1,0 +1,23 @@
+version: "2"
+services:
+  detector:
+    container_name: detector
+    #image: flohannes/detector:latest
+    build:
+      context: .
+    restart: 'unless-stopped'
+    ports:
+      - 8080:8080
+    volumes:
+      - ./results:/results
+    command:
+    # arg0 = mode 
+      - |
+        listen+csv://:8080
+        ->
+        java(step = anomaly-detection, 
+              args = {
+                arg0 = "ae"
+              }
+        )
+        -> /results/result.csv
